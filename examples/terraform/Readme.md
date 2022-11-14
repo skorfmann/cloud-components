@@ -35,7 +35,6 @@ Terraform will perform the following actions:
 Plan: 1 to add, 0 to change, 0 to destroy.
 ```
 
-The Terraform Provider Schema looks like this
 
 Notes:
 
@@ -43,7 +42,8 @@ Notes:
 - Needs to implement at least post / get
 - Host needs to be [set in spec](https://github.com/dikhan/terraform-provider-openapi/blob/master/docs/how_to.md)
 
-<detail>
+<details>
+<summary>Terraform Proivder Schema</summary>
 
 ```json
 {
@@ -134,7 +134,7 @@ Notes:
 }
 ```
 
-<detail>
+</details>
 
 ## OpenAPI 2.0 specs only
 
