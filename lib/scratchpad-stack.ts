@@ -19,7 +19,6 @@ export class ScratchpadStack extends cdk.Stack {
       logRetention: logs.RetentionDays.ONE_DAY,
     });
 
-
     const variables = {
       FooFunctionName: fn.functionArn,
     }
