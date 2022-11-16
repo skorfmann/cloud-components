@@ -26,6 +26,8 @@
     "constructs": "^10.0.0",
     "esbuild": "^0.15.13",
     "mustache": "^4.2.0",
-    "source-map-support": "^0.5.21"
+    "source-map-support": "^0.5.21",
+    "api-spec-converter": "^2.12.0",
+    "typeconv": "^1.8.0"
   }
 }
