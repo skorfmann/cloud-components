@@ -1,0 +1,8 @@
+api = "0.7"
+
+[buildpack]
+  id = "examples/python"
+  version = "0.0.1"
+
+[[stacks]]
+  id = "io.buildpacks.samples.stacks.bionic"

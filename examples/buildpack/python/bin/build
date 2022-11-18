@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+set -eo pipefail
+
+echo "---> Python Buildpack"
+
+# 1. GET ARGS
+layersdir=$1
+
+
+manifestdir="/workspace/manifest"
+mkdir -p $manifestdir
+
+echo "layersdir: $layersdir"
+
+# 2. CREATE THE LAYER DIRECTORY
+pythonlayer="$layersdir"/python
+mkdir -p "$pythonlayer"
+
+# 3. DOWNLOAD PYTHON
+echo "---> Downloading and extracting Python"
+python_url=https://s3-external-1.amazonaws.com/heroku-buildpack-python/heroku-18/runtimes/python-3.11.0.tar.gz
+wget -q -O - "$python_url" | tar -xzf - -C "$pythonlayer"
+
+jq_url=https://stedolan.github.io/jq/download/linux64/jq
+wget -q -O - "$jq_url" > "$pythonlayer"/bin/jq
+chmod +x "$pythonlayer"/bin/jq
+
+# # 4. MAKE PYTHON AVAILABLE DURING LAUNCH
+# echo -e '[types]\nlaunch = true' > "$layersdir/python.toml"
+
+# 5. MAKE PYTHON AVAILABLE TO THIS SCRIPT
+export PATH="$pythonlayer"/bin:$PATH
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH:+${LD_LIBRARY_PATH}:}"$pythonlayer/lib"
+
+# 6. INSTALL PIP
+echo "---> Installing Pip"
+wget https://bootstrap.pypa.io/get-pip.py
+python ./get-pip.py
+
+# 7. INSTALL DEPENDENCIES
+echo "---> Installing dependencies"
+pip install -r requirements.txt
+pip install openapi-specgen
+
+component_model=$(python main.py | jq -c -r -M .)
+echo $component_model | > ${manifestdir}/component_model.json
+
+cat <<TOML > $layersdir/python.toml
+[types]
+launch = true
+cache = true
+
+[metadata]
+component_manifest = """${component_model}"""
+TOML
